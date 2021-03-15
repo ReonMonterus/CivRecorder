@@ -1,0 +1,146 @@
+
+<html>
+   <head>
+      <style type="text/css">
+         .sikuli-code {
+            font-size: 20px;
+            font-family: "Osaka-mono", Monospace;
+            line-height: 1.5em;
+            display:table-cell;
+            white-space: pre-wrap;       /* css-3 */
+            white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+            white-space: -pre-wrap;      /* Opera 4-6 */
+            white-space: -o-pre-wrap;    /* Opera 7 */
+            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+            width: 99%;   /* remove horizontal scroll-bar when viewing in IE7 */
+         }
+         .sikuli-code img {
+            vertical-align: middle;
+            margin: 2px;
+            border: 1px solid #ccc;
+            padding: 2px;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            -moz-box-shadow: 1px 1px 1px gray;
+            -webkit-box-shadow: 1px 1px 2px gray;
+         }
+         .kw {
+            color: blue;
+         }
+         .skw {
+            color: rgb(63, 127, 127);
+         }
+
+         .str {
+            color: rgb(128, 0, 0);
+         }
+
+         .dig {
+            color: rgb(128, 64, 0);
+         }
+
+         .cmt {
+            color: rgb(200, 0, 200);
+         }
+
+         h2 {
+            display: inline;
+            font-weight: normal;
+         }
+
+         .info {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+            display: none;
+         }
+
+         a {
+            color: #9D2900;
+         }
+
+         body {
+            font-family: "Trebuchet MS", Arial, Sans-Serif;
+         }
+
+      </style>
+   </head>
+<body>
+<div class="info">
+<h2>module.sikuli</h2> <a href="module.zip">(Download this script)</a>
+</div>
+<pre class="sikuli-code">
+<span class="kw">from</span> java.lang <span class="kw">import</span> String
+<span class="kw">from</span> java.util <span class="kw">import</span> Properties
+<span class="kw">from</span> org.sqlite <span class="kw">import</span> SQLiteConnection
+
+<span class="kw">def</span> connect(url):
+    <span class="kw">return</span> Connection(<span class="str">""</span>, url)
+
+
+<span class="kw">class</span> Connection(SQLiteConnection):
+
+    <span class="kw">def</span> cursor(self):
+        <span class="kw">return</span> Cursor(self)
+
+    <span class="kw">def</span> execute(self, sql):
+        <span class="kw">return</span> self.cursor().execute(sql)
+
+
+<span class="kw">class</span> Cursor:
+
+    <span class="kw">def</span> __init__(self, connection):
+        self._conn   = connection
+        self._result = None
+        self._rmeta  = None
+        self._status = None
+        self._stmt   = None
+
+    <span class="kw">def</span> execute(self, sql):
+        self._result = None
+        self._rmeta  = None
+        self._stmt   = self._conn.createStatement()
+        self._status = self._stmt.execute(sql)
+        count = self._stmt.getUpdateCount()
+        <span class="kw">if</span> count == -<span class="dig">1</span>:
+            self._result = self._stmt.getResultSet()
+            self._rmeta  = self._result.getMetaData()
+        <span class="kw">else</span>:
+            self._result = count
+
+    <span class="kw">def</span> fetchone(self):
+        <span class="kw">return</span> self._fetch(<span class="str">"one"</span>)
+
+    <span class="kw">def</span> fetchmany(self, n):
+        <span class="kw">return</span> self._fetch(<span class="str">"many"</span>, n)
+
+    <span class="kw">def</span> fetchall(self):
+        <span class="kw">return</span> self._fetch(<span class="str">"all"</span>)
+
+    <span class="kw">def</span> _fetch(self, size, n = <span class="dig">0</span>):
+        <span class="kw">if</span> self._result <span class="kw">is</span> None <span class="kw">or</span> self._result.next() == False:
+            <span class="kw">raise</span> Error(<span class="str">"resultset is empty"</span>)
+        <span class="kw">if</span> size == <span class="str">"one"</span>:
+            value = self._get_row()
+        <span class="kw">elif</span> size == <span class="str">"many"</span>:
+            value = [self._get_row()]
+            <span class="kw">for</span> i <span class="kw">in</span> range(n):
+                <span class="kw">if</span> self._result.next():
+                    value.append(self._get_row())
+                <span class="kw">else</span>:
+                    <span class="kw">break</span>
+        <span class="kw">else</span>:
+            value = [self._get_row()]
+            <span class="kw">while</span> self._result.next():
+                value.append(self._get_row())
+        <span class="kw">return</span> value
+
+    <span class="kw">def</span> _get_row(self):
+        row = list()
+        n_columns = self._rmeta.getColumnCount()
+        <span class="kw">for</span> i <span class="kw">in</span> range(<span class="dig">1</span>, (n_columns + <span class="dig">1</span>)):
+            row.append(self._result.getObject(i))
+        <span class="kw">return</span> tuple(row)
+</pre>
+</body>
+</html>

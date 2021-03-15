@@ -1,0 +1,612 @@
+
+<html>
+   <head>
+      <style type="text/css">
+         .sikuli-code {
+            font-size: 20px;
+            font-family: "Osaka-mono", Monospace;
+            line-height: 1.5em;
+            display:table-cell;
+            white-space: pre-wrap;       /* css-3 */
+            white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+            white-space: -pre-wrap;      /* Opera 4-6 */
+            white-space: -o-pre-wrap;    /* Opera 7 */
+            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+            width: 99%;   /* remove horizontal scroll-bar when viewing in IE7 */
+         }
+         .sikuli-code img {
+            vertical-align: middle;
+            margin: 2px;
+            border: 1px solid #ccc;
+            padding: 2px;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            -moz-box-shadow: 1px 1px 1px gray;
+            -webkit-box-shadow: 1px 1px 2px gray;
+         }
+         .kw {
+            color: blue;
+         }
+         .skw {
+            color: rgb(63, 127, 127);
+         }
+
+         .str {
+            color: rgb(128, 0, 0);
+         }
+
+         .dig {
+            color: rgb(128, 64, 0);
+         }
+
+         .cmt {
+            color: rgb(200, 0, 200);
+         }
+
+         h2 {
+            display: inline;
+            font-weight: normal;
+         }
+
+         .info {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+            display: none;
+         }
+
+         a {
+            color: #9D2900;
+         }
+
+         body {
+            font-family: "Trebuchet MS", Arial, Sans-Serif;
+         }
+
+      </style>
+   </head>
+<body>
+<div class="info">
+<h2>module.sikuli</h2> <a href="module.zip">(Download this script)</a>
+</div>
+<pre class="sikuli-code">
+<span class="kw">import</span> shutil
+<span class="kw">import</span> os
+<span class="kw">import</span> glob
+load(<span class="str">"C:\\Users\\weath\\Downloads\\sqlite-jdbc-3.23.1.jar"</span>)
+<span class="kw">from</span> com.ziclix.python.sql <span class="kw">import</span> zxJDBC
+
+<span class="kw">def</span> turn_processing(civgame, OBS):
+    <span class="cmt">#Civ V popup handing</span>
+    <span class="kw">if</span> exists(<img src="1536089769203.png" />):
+        <span class="skw">click</span>(<img src="1536089769203.png" />)
+    <span class="kw">elif</span> exists(<img src="1536090373974.png" />):
+        <span class="skw">click</span>(<img src="1536090373974.png" />)
+    <span class="kw">elif</span> exists(<img src="1536090913714.png" />):
+        <span class="skw">click</span>(<img src="1536090913714.png" />)
+    <span class="kw">elif</span> exists(<img src="1551291437192.png" />):
+        <span class="skw">click</span>(<img src="1551291437192.png" />)
+    <span class="kw">else</span>:
+        turn = turn_getter() <span class="cmt">#get the turn</span>
+        <span class="kw">print</span> <span class="str">"turn processing"</span>
+        map_screen_shotter() <span class="cmt">#take some screenshots</span>
+        <span class="kw">if</span> turn % <span class="dig">10</span> == <span class="dig">0</span> <span class="kw">and</span> turn &gt; <span class="dig">20</span>:
+            addl_info_shotter() <span class="cmt">#every 10 turns screenshot religion and cities info</span>
+        recording_stopper(OBS)
+        <span class="skw">wait</span>(<span class="dig">10</span>)
+        file_processor()
+        OBS = recording_initializer() <span class="cmt">#start recording again after taking screenshots after turn 30</span>
+        <span class="cmt">#try to find the next turn button. sometimes fails so we kick out of the loop and try again if it does</span>
+        <span class="kw">try</span>:
+            <span class="kw">print</span> <span class="str">"next turn"</span>
+            <span class="skw">click</span>(<img src="1536087253968.png" />)
+            <span class="cmt">#hover(civgame.window().getBottomRight().offset(-30,-30))</span>
+            hover(Region(<span class="dig">0</span>,<span class="dig">0</span>,<span class="dig">1780</span>,<span class="dig">1100</span>).getBottomRight())
+        <span class="kw">except</span>:
+            <span class="kw">return</span>
+
+<span class="kw">def</span> test_processing(civgame):
+    <span class="cmt">#Civ V popup handing</span>
+    <span class="kw">if</span> exists(<img src="1536089769203.png" />):
+        <span class="skw">click</span>(<img src="1536089769203.png" />)
+    <span class="kw">elif</span> exists(<img src="1536090373974.png" />):
+        <span class="skw">click</span>(<img src="1536090373974.png" />)
+    <span class="kw">elif</span> exists(<img src="1536090913714.png" />):
+        <span class="skw">click</span>(<img src="1536090913714.png" />)
+    <span class="kw">elif</span> exists(<img src="1551291437192.png" />):
+        <span class="skw">click</span>(<img src="1551291437192.png" />)
+    <span class="kw">else</span>:
+        turn = turn_getter() <span class="cmt">#get the turn</span>
+        <span class="kw">print</span> <span class="str">"turn processing"</span>
+        <span class="cmt">#map_screen_shotter() #take some screenshots</span>
+<span class="cmt">#        if turn % 10 == 0 and turn &gt; 20:</span>
+<span class="cmt">#            addl_info_shotter() #every 10 turns screenshot religion and cities info</span>
+        <span class="skw">wait</span>(<span class="dig">10</span>)
+<span class="cmt">#        file_processor()</span>
+        <span class="cmt">#try to find the next turn button. sometimes fails so we kick out of the loop and try again if it does</span>
+        <span class="kw">try</span>:
+            <span class="kw">print</span> <span class="str">"next turn"</span>
+            <span class="skw">click</span>(<img src="1536087253968.png" />)
+            <span class="cmt">#hover(civgame.window().getBottomRight().offset(-30,-30))</span>
+            hover(Region(<span class="dig">0</span>,<span class="dig">0</span>,<span class="dig">1780</span>,<span class="dig">1100</span>).getBottomRight())
+        <span class="kw">except</span>:
+            <span class="kw">return</span>
+
+
+<span class="kw">def</span> turn_waiter(civgame, OBS):
+    <span class="kw">while</span> appActive(<span class="str">"CivilizationV_DX11.exe"</span>):
+        <span class="cmt">#wait while the turn processes</span>
+        buttonRegion = Region(<span class="dig">1574</span>,<span class="dig">894</span>,<span class="dig">336</span>,<span class="dig">54</span>)
+        <span class="skw">wait</span>(<span class="dig">30</span>)
+        <span class="kw">if</span> <span class="kw">not</span> appActive(<span class="str">"CivilizationV_DX11.exe"</span>):
+            <span class="kw">print</span> <span class="str">"Game crashed in while loop"</span>
+            <span class="kw">return</span> None
+        <span class="kw">while</span> <span class="kw">not</span> exists(<img src="1536087253968.png" />) <span class="kw">and</span> appActive(<span class="str">"CivilizationV_DX11.exe"</span>):
+            <span class="skw">wait</span>(<span class="dig">10</span>)
+            <span class="kw">if</span> exists(<img src="1550604767883.png" />):
+                <span class="skw">click</span>(<img src="1550604767883.png" />)
+                <span class="skw">wait</span>(<span class="dig">2</span>)
+                <span class="kw">while</span> <span class="kw">not</span> exists(<img src="1550604816256.png" />) <span class="kw">and</span> appActive(<span class="str">"CivilizationV_DX11.exe"</span>):
+                    <span class="skw">wait</span>(<span class="dig">5</span>)
+                <span class="skw">click</span>(<img src="1550604816256.png" />)
+                <span class="skw">wait</span>(<span class="dig">1</span>)
+                <span class="skw">click</span>(<img src="1550604837734.png" />)
+        <span class="kw">else</span>:
+            <span class="kw">try</span>:
+                <span class="kw">if</span> appActive(<span class="str">"CivilizationV_DX11.exe"</span>):
+                    turn_processing(civgame,OBS) <span class="cmt">#after next turn appears, call the turn processing</span>
+                    <span class="kw">print</span> <span class="str">"turn processed"</span>
+                    <span class="cmt">#hover(civgame.window().getBottomRight().offset(-30,-30))</span>
+                    hover(Region(<span class="dig">0</span>,<span class="dig">0</span>,<span class="dig">1780</span>,<span class="dig">1100</span>).getBottomRight())
+            <span class="kw">except</span>:
+                <span class="kw">print</span> <span class="str">"turn failed, return None"</span>
+                <span class="kw">return</span> None
+            <span class="kw">try</span>:
+                hover(Region(<span class="dig">0</span>,<span class="dig">0</span>,<span class="dig">1780</span>,<span class="dig">1100</span>).getBottomRight())
+            <span class="kw">except</span>:
+                <span class="kw">print</span> <span class="str">"hover failed"</span>
+            <span class="kw">print</span> <span class="str">"Waiter While loop end"</span>
+    <span class="kw">print</span> <span class="str">"while failed"</span>
+    <span class="kw">return</span> None
+
+<span class="kw">def</span> test_waiter(civgame):
+    <span class="kw">while</span> appActive(<span class="str">"CivilizationV_DX11.exe"</span>):
+        <span class="cmt">#wait while the turn processes</span>
+        buttonRegion = Region(<span class="dig">1574</span>,<span class="dig">894</span>,<span class="dig">336</span>,<span class="dig">54</span>)
+        <span class="skw">wait</span>(<span class="dig">30</span>)
+        <span class="kw">if</span> <span class="kw">not</span> appActive(<span class="str">"CivilizationV_DX11.exe"</span>):
+            <span class="kw">print</span> <span class="str">"Game crashed in while loop"</span>
+            <span class="kw">return</span> None
+        <span class="kw">while</span> <span class="kw">not</span> exists(<img src="1536087253968.png" />) <span class="kw">and</span> appActive(<span class="str">"CivilizationV_DX11.exe"</span>):
+            <span class="skw">wait</span>(<span class="dig">10</span>)
+            <span class="kw">if</span> exists(<img src="1550604767883.png" />):
+                <span class="skw">click</span>(<img src="1550604767883.png" />)
+                <span class="skw">wait</span>(<span class="dig">2</span>)
+                <span class="kw">while</span> <span class="kw">not</span> exists(<img src="1550604816256.png" />) <span class="kw">and</span> appActive(<span class="str">"CivilizationV_DX11.exe"</span>):
+                    <span class="skw">wait</span>(<span class="dig">5</span>)
+                <span class="skw">click</span>(<img src="1550604816256.png" />)
+                <span class="skw">wait</span>(<span class="dig">1</span>)
+                <span class="skw">click</span>(<img src="1550604837734.png" />)
+        <span class="kw">else</span>:
+            <span class="kw">try</span>:
+                <span class="kw">if</span> appActive(<span class="str">"CivilizationV_DX11.exe"</span>):
+                    test_processing(civgame) <span class="cmt">#after next turn appears, call the turn processing</span>
+                    <span class="kw">print</span> <span class="str">"turn processed"</span>
+                    <span class="cmt">#hover(civgame.window().getBottomRight().offset(-30,-30))</span>
+                    hover(Region(<span class="dig">0</span>,<span class="dig">0</span>,<span class="dig">1780</span>,<span class="dig">1100</span>).getBottomRight())
+            <span class="kw">except</span>:
+                <span class="kw">print</span> <span class="str">"turn failed, return None"</span>
+                <span class="kw">return</span> None
+            <span class="kw">try</span>:
+                hover(Region(<span class="dig">0</span>,<span class="dig">0</span>,<span class="dig">1780</span>,<span class="dig">1100</span>).getBottomRight())
+            <span class="kw">except</span>:
+                <span class="kw">print</span> <span class="str">"hover failed"</span>
+            <span class="kw">print</span> <span class="str">"Waiter While loop end"</span>
+    <span class="kw">print</span> <span class="str">"while failed"</span>
+    <span class="kw">return</span> None
+
+<span class="kw">def</span> map_screen_shotter():
+    minimapRegion = Region(<span class="dig">1580</span>,<span class="dig">901</span>,<span class="dig">329</span>,<span class="dig">210</span>)
+    ssoffsetx = -<span class="dig">150</span> <span class="cmt">#starting offsets</span>
+    ssoffsety = <span class="dig">60</span>
+    turn = turn_getter()
+    <span class="kw">print</span> <span class="str">"taking screenshots"</span>
+    <span class="cmt">#take screenshots with steams F12 keybind. loop through the map</span>
+    <span class="kw">while</span> ssoffsety &lt; <span class="dig">195</span>:
+        ssoffsetx = -<span class="dig">150</span>
+        <span class="kw">while</span> ssoffsetx &lt; <span class="dig">190</span>:
+            <span class="skw">click</span>(minimapRegion.<span class="skw">find</span>(<img src="1536087253968.png" />).offset(ssoffsetx,ssoffsety))
+            <span class="skw">wait</span>(<span class="dig">2</span>)
+<span class="cmt">#            type(Key.F12)</span>
+            ssoffsetx += <span class="dig">15</span>
+        ssoffsety += <span class="dig">24</span>
+
+
+<span class="kw">def</span> recording_initializer():
+    OBS = App(<span class="str">"OBS"</span>)
+    <span class="kw">try</span>:
+        <span class="kw">if</span> <span class="kw">not</span> OBS.window():
+            OBS.open(<span class="str">"C:\\Users\\weath\\OneDrive\\Documents\\obs.bat"</span>)
+            <span class="skw">wait</span>(<span class="dig">5</span>)
+            <span class="kw">print</span> <span class="str">"OBS Opened"</span>
+        <span class="kw">else</span>:
+            <span class="kw">print</span> <span class="str">"OBS already open"</span>
+        OBS.focus() <span class="cmt">#focus on OBS</span>
+        <span class="skw">click</span>(<span class="skw">find</span>(<img src="1569046487219.png" />))
+        <span class="skw">click</span>(<span class="skw">find</span>(<img src="1569046525675.png" />))
+        <span class="kw">return</span> OBS
+    <span class="kw">except</span>:
+        <span class="kw">print</span> <span class="str">"Recording init error"</span>
+        <span class="kw">return</span> <span class="cmt">#if the above fails, abandon ship</span>
+
+<span class="kw">def</span> recording_stopper(OBS):
+    <span class="cmt">#Processing the stopping of recording</span>
+    <span class="kw">try</span>:
+        <span class="cmt">#if OBS.window():</span>
+<span class="cmt">#           OBS.focus()</span>
+<span class="cmt">#           click(find("1539302248946.png"))</span>
+        OBS.close()
+        <span class="kw">print</span> <span class="str">"stopped recording"</span>
+        <span class="kw">return</span> OBS
+    <span class="kw">except</span>:
+        <span class="kw">print</span> <span class="str">"recording stop error"</span>
+        <span class="kw">return</span> <span class="str">"recording stop error"</span>
+
+<span class="kw">def</span> recording_starter(OBS):
+    <span class="cmt">#independent processing of the starting of recording</span>
+    <span class="kw">try</span>:
+        <span class="kw">if</span> OBS.window():
+            OBS.focus()
+            <span class="skw">click</span>(<span class="skw">find</span>(<img src="1541843460948.png" />).offset(<span class="dig">0</span>,<span class="dig">40</span>))
+            <span class="kw">print</span> <span class="str">"started recording"</span>
+            <span class="kw">return</span> OBS
+    <span class="kw">except</span>:
+        <span class="kw">print</span> <span class="str">"recording start error"</span>
+        <span class="kw">return</span> <span class="str">"recording start error"</span>
+
+
+<span class="kw">def</span> game_restarter(started):
+    CivV = App(<span class="str">"CivilizationV"</span>)
+    turn = turn_getter()
+    <span class="kw">try</span>:
+        <span class="kw">if</span> <span class="kw">not</span> started:
+            CivV.open(<span class="str">"C:\\Program Files (x86)\\Steam\\steamapps\\common\\Sid Meier's Civilization V\\CivilizationV_DX11.exe"</span>)
+            <span class="skw">wait</span>(<span class="dig">30</span>)
+            <span class="skw">click</span>(<img src="1589037799223.png" />)
+            <span class="skw">wait</span>(<span class="dig">10</span>)
+            <span class="kw">while</span> <span class="kw">not</span> exists(<img src="1537682070546.png" />) <span class="kw">and</span> appActive(<span class="str">"CivilizationV_DX11.exe"</span>):
+                <span class="skw">wait</span>(<span class="dig">10</span>)
+            <span class="kw">else</span>:
+                <span class="kw">if</span> exists(<img src="1537682070546.png" />):
+                    <span class="skw">wait</span>(<span class="dig">10</span>)
+                    <span class="skw">click</span>(<img src="1537682070546.png" />) <span class="cmt">#initial prompt</span>
+                <span class="kw">else</span>:
+                    <span class="kw">print</span> <span class="str">"Game crash, restart"</span>
+                    <span class="kw">return</span> None
+            <span class="skw">wait</span>(<span class="dig">1</span>)
+            <span class="skw">click</span>(<img src="1537682089185.png" />) <span class="cmt">#mods menu</span>
+            <span class="skw">wait</span>(<span class="dig">1</span>)
+            <span class="skw">click</span>(<img src="1537682120561.png" />) <span class="cmt">#accept terms</span>
+            <span class="skw">wait</span>(<span class="dig">1</span>)
+            <span class="skw">click</span>(<img src="1537682143489.png" />) <span class="cmt">#mod selection</span>
+            <span class="skw">wait</span>(<span class="dig">60</span>)
+            <span class="skw">click</span>(<img src="1537682222024.png" />) <span class="cmt">#single player menu</span>
+            <span class="skw">wait</span>(<span class="dig">1</span>)
+            <span class="skw">click</span>(<img src="1537682237784.png" />) <span class="cmt">#load menu</span>
+            <span class="skw">wait</span>(<span class="dig">1</span>)
+            <span class="skw">click</span>(<img src="1537682252680.png" />) <span class="cmt">#select autosaves</span>
+            <span class="skw">wait</span>(<span class="dig">1</span>)
+            <span class="skw">click</span>(<span class="skw">find</span>(<img src="1537690445225.png" />).offset(<span class="dig">0</span>,<span class="dig">90</span>)) <span class="cmt">#choose the top save</span>
+            <span class="skw">click</span>(<img src="1537682336599.png" />) <span class="cmt">#load it</span>
+            <span class="kw">while</span> <span class="kw">not</span> exists(<img src="1538435041037.png" />) <span class="kw">and</span> appActive(<span class="str">"CivilizationV_DX11.exe"</span>):
+                <span class="skw">wait</span>(<span class="dig">10</span>)
+            <span class="kw">else</span>:
+                <span class="kw">if</span> exists(<img src="1538435041037.png" />):
+                    <span class="skw">click</span>(<img src="1538435041037.png" />) <span class="cmt">#DoM prompt</span>
+                <span class="kw">else</span>:
+                    <span class="kw">print</span> <span class="str">"Game crash, restart"</span>
+                    <span class="kw">return</span> None
+<span class="cmt">#            wait(1) </span>
+<span class="cmt">#            click("1569902718242.png")</span>
+<span class="cmt">#            wait(30)</span>
+<span class="cmt">#            type("-")             #zoom out all the way, then back in one</span>
+<span class="cmt">#            wait(30)</span>
+<span class="cmt">#            type("-")</span>
+<span class="cmt">#            wait(30)</span>
+<span class="cmt">#            type("-")</span>
+<span class="cmt">#            wait(30)</span>
+<span class="cmt">#            type("-")</span>
+<span class="cmt">#            wait(30)</span>
+<span class="cmt">#            type("+")</span>
+<span class="cmt">#            wait(30)</span>
+        <span class="kw">else</span>:
+            <span class="kw">print</span> <span class="str">"Civ V already open"</span>
+            <span class="kw">return</span> CivV
+        <span class="kw">return</span> CivV
+    <span class="kw">except</span>:
+        <span class="kw">print</span> <span class="str">"app open failed"</span>
+        <span class="kw">return</span> None
+
+<span class="kw">def</span> game_starter():
+    CivV = App(<span class="str">"CivilizationV"</span>)
+    <span class="kw">try</span>:
+        <span class="kw">if</span> <span class="kw">not</span> CivV.window():
+            CivV.open(<span class="str">"C:\\Program Files (x86)\\Steam\\steamapps\\common\\Sid Meier's Civilization V\\CivilizationV_DX11.exe"</span>)
+            <span class="skw">wait</span>(<span class="dig">10</span>)
+            <span class="kw">while</span> <span class="kw">not</span> exists(<img src="1537682070546.png" />) <span class="kw">and</span> appActive(<span class="str">"CivilizationV_DX11.exe"</span>):
+                <span class="skw">wait</span>(<span class="dig">10</span>)
+            <span class="kw">else</span>:
+                <span class="kw">if</span> exists(<img src="1537682070546.png" />):
+                    <span class="skw">wait</span>(<span class="dig">30</span>)
+                    <span class="skw">click</span>(<img src="1537682070546.png" />) <span class="cmt">#initial prompt</span>
+                <span class="kw">else</span>:
+                    <span class="kw">print</span> <span class="str">"Game crash, restart"</span>
+                    <span class="kw">return</span> None
+            <span class="skw">wait</span>(<span class="dig">1</span>)
+            <span class="skw">click</span>(<img src="1537682089185.png" />) <span class="cmt">#mods menu</span>
+            <span class="skw">wait</span>(<span class="dig">1</span>)
+            <span class="skw">click</span>(<img src="1537682120561.png" />) <span class="cmt">#accept terms</span>
+            <span class="skw">wait</span>(<span class="dig">1</span>)
+            <span class="skw">click</span>(<img src="1537682143489.png" />) <span class="cmt">#mod selection</span>
+            <span class="skw">wait</span>(<span class="dig">60</span>)
+            <span class="skw">click</span>(<img src="1537682222024.png" />) <span class="cmt">#single player menu</span>
+            <span class="skw">wait</span>(<span class="dig">1</span>)
+            <span class="skw">click</span>(<img src="1540774074657.png" />) <span class="cmt">#new game</span>
+            <span class="skw">wait</span>(<span class="dig">1</span>)
+            <span class="skw">click</span>(<img src="1540774098776.png" />) <span class="cmt">#advanced menu</span>
+            <span class="skw">wait</span>(<span class="dig">1</span>)
+            <span class="skw">click</span>(<img src="1540774117681.png" />) <span class="cmt">#Start er up</span>
+            <span class="kw">while</span> <span class="kw">not</span> exists(<img src="1538435041037.png" />) <span class="kw">and</span> appActive(<span class="str">"CivilizationV_DX11.exe"</span>):
+                <span class="skw">wait</span>(<span class="dig">10</span>)
+            <span class="kw">else</span>:
+                <span class="kw">if</span> exists(<img src="1538435041037.png" />):
+                    <span class="skw">click</span>(<img src="1538435041037.png" />) <span class="cmt">#DoM prompt</span>
+                <span class="kw">else</span>:
+                    <span class="kw">print</span> <span class="str">"Game crash, restart"</span>
+                    <span class="kw">return</span> None
+<span class="cmt">#            wait(1) </span>
+<span class="cmt">#            click("1569902718242.png")</span>
+<span class="cmt">#            wait(30)</span>
+<span class="cmt">#            type("-")             #zoom out all the way, then back in one</span>
+<span class="cmt">#            wait(30)</span>
+<span class="cmt">#            type("-")</span>
+<span class="cmt">#            wait(30)</span>
+<span class="cmt">#            type("-")</span>
+<span class="cmt">#            wait(30)</span>
+<span class="cmt">#            type("-")</span>
+<span class="cmt">#            wait(30)</span>
+<span class="cmt">#            type("+")</span>
+<span class="cmt">#            wait(30)</span>
+        <span class="kw">return</span> CivV
+    <span class="kw">except</span>:
+        <span class="kw">return</span> CivV
+
+<span class="kw">def</span> file_processor():
+    <span class="kw">print</span> <span class="str">"processing files"</span>
+    turn = turn_getter() <span class="cmt">#get the current turn</span>
+    <span class="kw">try</span>:
+        os.mkdir(<span class="str">"D:\\CBRXS1 Processed Turns\\Turn %d"</span> %(turn)) <span class="cmt">#make a directory to store stuff in</span>
+        os.mkdir(<span class="str">"D:\\CBRXS1 Processed Turns\\Turn %d\\images"</span> %(turn))
+        os.mkdir(<span class="str">"D:\\CBRXS1 Processed Turns\\Turn %d\\video"</span> %(turn))
+        os.mkdir(<span class="str">"D:\\CBRXS1 Processed Turns\\Turn %d\\save"</span> %(turn))
+        os.mkdir(<span class="str">"D:\\CBRXS1 Processed Turns\\Turn %d\\db"</span> %(turn))
+    <span class="kw">except</span>:
+        <span class="kw">print</span> <span class="str">"Directory already made"</span>
+    savesource = max(glob.glob(<span class="str">"C:\\Users\\weath\\OneDrive\\Documents\\my games\\Sid Meier's Civilization 5\\ModdedSaves\\single\\auto\*"</span>), key = os.path.getctime)
+    savedest = <span class="str">"D:\\CBRXS1 Processed Turns\\Turn %d\\save"</span> %(turn)
+    dbdest = <span class="str">"D:\\CBRXS1 Processed Turns\\Turn %d\\db"</span> %(turn)
+    <span class="kw">try</span>:
+        <span class="kw">if</span> turn &gt;= <span class="dig">1</span>:
+            vidsource = os.listdir(<span class="str">"D:\\Recordings"</span>)
+            viddest = <span class="str">"D:\\CBRXS1 Processed Turns\\Turn %d\\video"</span> %(turn)
+            <span class="kw">for</span> vidfiles <span class="kw">in</span> vidsource:
+                <span class="kw">if</span> vidfiles.endswith(<span class="str">".mkv"</span>):
+                    shutil.move(<span class="str">"D:\\Recordings"</span>+<span class="str">"\\"</span>+vidfiles, viddest) <span class="cmt">#move video recording</span>
+        <span class="kw">else</span>:
+            <span class="kw">print</span> <span class="str">"too soon to move videos"</span>
+        <span class="kw">try</span>:
+            shutil.copy(savesource, savedest) <span class="cmt">#copy the save</span>
+        <span class="kw">except</span>:
+            <span class="kw">print</span> <span class="str">"Save move failed"</span>
+        <span class="kw">try</span>:
+            <span class="kw">if</span> turn % <span class="dig">10</span> == <span class="dig">0</span> <span class="kw">and</span> turn &gt; <span class="dig">20</span>:
+                shutil.copy(<span class="str">"C:\\Users\\weath\\OneDrive\\Documents\\my games\\Sid Meier's Civilization 5\\cache\\Civ5SavedGameDatabase.db"</span>, dbdest) <span class="cmt">#copy the DB file</span>
+        <span class="kw">except</span>:
+            <span class="kw">print</span> <span class="str">"DB move failed"</span>
+        <span class="kw">try</span>:
+            shutil.copy(<span class="str">"C:\\Users\\weath\\OneDrive\\Documents\\my games\\Sid Meier's Civilization 5\\Logs\\Lua.log"</span>, dbdest) <span class="cmt">#copy the Lua log</span>
+        <span class="kw">except</span>:
+            <span class="kw">print</span> <span class="str">"Lua log move failed"</span>
+    <span class="kw">except</span>:
+        <span class="kw">print</span> <span class="str">"files move failed"</span>
+
+
+<span class="kw">def</span> turn_getter():
+    <span class="cmt">#set db connection info</span>
+    url = <span class="str">"jdbc:sqlite:C:\\Users\\weath\\OneDrive\\Documents\\my games\\Sid Meier's Civilization 5\\cache\\Civ5SavedGameDatabase.db"</span>
+    dbuser = <span class="str">""</span>
+    dbpassword = <span class="str">""</span>
+    driver = <span class="str">"org.sqlite.JDBC"</span>
+    <span class="cmt">#connect to the db</span>
+    dbconn = zxJDBC.connect(url, dbuser, dbpassword, driver)
+    dbcur = dbconn.cursor()
+    <span class="cmt">#grab the current turn</span>
+    turn = [<span class="dig">0</span>]
+    <span class="kw">try</span>:
+        dbcur.execute(<span class="str">"select max(Turn) from InfoAddictHistoricalData"</span>)
+        turn = dbcur.fetchone()
+    <span class="kw">except</span>:
+        <span class="kw">print</span> <span class="str">"turn error"</span>
+        <span class="kw">return</span> -<span class="dig">1</span> <span class="cmt">#return -1 if it fails</span>
+    <span class="kw">finally</span>:
+        dbcur.close()
+        dbconn.close()
+        <span class="kw">print</span> turn[<span class="dig">0</span>]
+        <span class="kw">return</span> turn[<span class="dig">0</span>]
+
+<span class="kw">def</span> addl_info_shotter():
+    <span class="kw">print</span> <span class="str">"taking additional screenshots"</span>
+    <span class="kw">try</span>:
+        click_offset = <span class="dig">300</span>
+        <span class="skw">click</span>(<img src="1579217182046.png" />)
+        <span class="skw">click</span>(<img src="1539555772349.png" />)
+        <span class="skw">wait</span>(<span class="dig">10</span>)
+        <span class="skw">click</span>(<img src="1539555846035.png" />)
+        <span class="skw">click</span>(<img src="1579217182046.png" />)
+        <span class="skw">click</span>(<img src="1539555887396.png" />)
+        <span class="skw">wait</span>(<span class="dig">1</span>)
+        <span class="kw">try</span>:
+            <span class="skw">click</span>(<span class="skw">find</span>(<img src="1539556837966.png" />).offset(<span class="dig">0</span>,click_offset))
+        <span class="kw">except</span>:
+            <span class="kw">print</span> <span class="str">"too few religions"</span>
+        click_offset = <span class="dig">75</span>
+        <span class="skw">click</span>(<img src="1539555922251.png" />)
+        <span class="kw">while</span> <span class="kw">not</span> exists(<img src="1539556977333.png" />) <span class="kw">and</span> click_offset &lt; <span class="dig">600</span>:
+            <span class="skw">click</span>(<span class="skw">find</span>(<img src="1539556837966.png" />).offset(<span class="dig">0</span>,click_offset))
+            click_offset += <span class="dig">75</span>
+            <span class="skw">wait</span>(<span class="dig">1</span>)
+        <span class="skw">click</span>(<span class="skw">find</span>(<img src="1539556837966.png" />).offset(<span class="dig">0</span>,<span class="dig">50</span>))
+        <span class="skw">click</span>(<img src="1539556230809.png" />)
+        <span class="skw">click</span>(<img src="1539556745086.png" />)
+        <span class="skw">click</span>(<img src="1539556264290.png" />)
+    <span class="kw">except</span>:
+        <span class="kw">return</span>
+
+<span class="kw">def</span> appActive(appName):
+    call = <span class="str">'TASKLIST'</span>, <span class="str">'/FI'</span>, <span class="str">'imagename eq %s'</span> % appName
+    <span class="cmt"># Get the tasklist result</span>
+    proc = subprocess.Popen(call, shell=True, stdout=subprocess.PIPE)
+    <span class="cmt"># Trimming lines with information</span>
+    output = proc.communicate()[<span class="dig">0</span>].strip().split(<span class="str">'\r\n'</span>)
+    <span class="cmt"># If TASKLIST returns multiple lines, it is running. </span>
+    <span class="kw">if</span> len(output) &gt; <span class="dig">1</span> <span class="kw">and</span> appName <span class="kw">in</span> output[-<span class="dig">1</span>]:
+<span class="cmt">#        print('Result: "%s" is running!' % appName)</span>
+        <span class="kw">return</span> True
+    <span class="kw">else</span>:
+        <span class="kw">print</span>(<span class="str">'Result: "%s" is NOT running!'</span> % appName)
+        <span class="kw">return</span> False
+
+<span class="kw">def</span> CBRX_loader(started):
+    civgame = game_restarter(started)
+    <span class="kw">if</span> appActive(<span class="str">"CivilizationV_DX11.exe"</span>):
+        <span class="skw">click</span>(<img src="1541199351624.png" />)
+    <span class="kw">else</span>:
+        civgame = game_restarter(False)
+    <span class="skw">wait</span>(<span class="dig">10</span>)
+    <span class="kw">while</span> True:
+        <span class="kw">while</span> appActive(<span class="str">"CivilizationV_DX11.exe"</span>):
+            <span class="kw">print</span> <span class="str">"load sucessful"</span>
+            <span class="kw">return</span>
+        <span class="kw">else</span>:
+            <span class="kw">print</span> <span class="str">"Game crashed"</span>
+            <span class="kw">try</span>:
+                civgame.close()
+            <span class="kw">except</span>:
+                <span class="kw">print</span> <span class="str">"game close failed"</span>
+            <span class="skw">wait</span>(<span class="dig">300</span>)
+            civgame = game_restarter(False)
+
+<span class="kw">def</span> CBRX_processor(started):
+    civgame = game_restarter(started)
+    OBS = App(<span class="str">"OBS"</span>)
+    <span class="kw">if</span> <span class="kw">not</span> appActive(<span class="str">"obs64.exe"</span>):
+        recorder = recording_initializer()
+    <span class="kw">else</span>:
+        OBS.close()
+        recorder = recording_initializer()
+    <span class="kw">if</span> appActive(<span class="str">"CivilizationV_DX11.exe"</span>):
+        <span class="skw">click</span>(<img src="1541199351624.png" />)
+    <span class="kw">else</span>:
+        civgame = game_restarter(False)
+    <span class="skw">wait</span>(<span class="dig">10</span>)
+    <span class="kw">while</span> True:
+        <span class="kw">while</span> appActive(<span class="str">"CivilizationV_DX11.exe"</span>):
+            <span class="kw">try</span>:
+                <span class="kw">if</span> exists(<img src="1550604767883.png" />):
+                    <span class="skw">click</span>(<img src="1550604767883.png" />)
+                    <span class="skw">wait</span>(<span class="dig">2</span>)
+                    <span class="skw">click</span>(<img src="1550604816256.png" />)
+                    <span class="skw">wait</span>(<span class="dig">2</span>)
+                    <span class="skw">click</span>(<img src="1550604837734.png" />)
+            <span class="kw">except</span>:
+                <span class="kw">print</span> <span class="str">"Not WC turn"</span>
+            <span class="kw">try</span>:
+                <span class="skw">click</span>(<img src="1536087253968.png" />)
+                <span class="cmt">#hover(civgame.window().getBottomRight().offset(-30,-30))</span>
+                hover(Region(<span class="dig">0</span>,<span class="dig">0</span>,<span class="dig">1780</span>,<span class="dig">1100</span>).getBottomRight())
+            <span class="kw">except</span>:
+                <span class="kw">print</span> <span class="str">"first click error"</span>
+            <span class="kw">print</span> <span class="str">"going to turn waiter"</span>
+            turn_waiter(civgame,recorder)
+        <span class="kw">else</span>:
+            <span class="kw">print</span> <span class="str">"Game crashed"</span>
+            <span class="kw">try</span>:
+                civgame.close()
+            <span class="kw">except</span>:
+                <span class="kw">print</span> <span class="str">"game close failed"</span>
+            recording_stopper(recorder)
+            <span class="skw">wait</span>(<span class="dig">300</span>)
+            civgame = game_restarter(False)
+            recording_initializer()
+
+<span class="kw">def</span> test_processor(started):
+    civgame = game_restarter(started)
+    <span class="kw">if</span> appActive(<span class="str">"CivilizationV_DX11.exe"</span>):
+        <span class="skw">click</span>(<img src="1541199351624.png" />)
+    <span class="kw">else</span>:
+        civgame = game_restarter(False)
+    <span class="skw">wait</span>(<span class="dig">10</span>)
+    <span class="kw">while</span> True:
+        <span class="kw">while</span> appActive(<span class="str">"CivilizationV_DX11.exe"</span>):
+            <span class="kw">try</span>:
+                <span class="kw">if</span> exists(<img src="1550604767883.png" />):
+                    <span class="skw">click</span>(<img src="1550604767883.png" />)
+                    <span class="skw">wait</span>(<span class="dig">2</span>)
+                    <span class="skw">click</span>(<img src="1550604816256.png" />)
+                    <span class="skw">wait</span>(<span class="dig">2</span>)
+                    <span class="skw">click</span>(<img src="1550604837734.png" />)
+            <span class="kw">except</span>:
+                <span class="kw">print</span> <span class="str">"Not WC turn"</span>
+            <span class="kw">try</span>:
+                <span class="skw">click</span>(<img src="1536087253968.png" />)
+                <span class="cmt">#hover(civgame.window().getBottomRight().offset(-30,-30))</span>
+                hover(Region(<span class="dig">0</span>,<span class="dig">0</span>,<span class="dig">1780</span>,<span class="dig">1100</span>).getBottomRight())
+            <span class="kw">except</span>:
+                <span class="kw">print</span> <span class="str">"first click error"</span>
+            <span class="kw">print</span> <span class="str">"going to turn waiter"</span>
+            test_waiter(civgame)
+        <span class="kw">else</span>:
+            <span class="kw">print</span> <span class="str">"Game crashed"</span>
+            <span class="kw">try</span>:
+                civgame.close()
+            <span class="kw">except</span>:
+                <span class="kw">print</span> <span class="str">"game close failed"</span>
+            <span class="skw">wait</span>(<span class="dig">300</span>)
+            civgame = game_restarter(False)
+
+
+<span class="kw">def</span> early_processor():
+    OBS = App(<span class="str">"OBS"</span>)
+    civv = App(<span class="str">"CivilizationV"</span>)
+    turn = turn_getter()
+    <span class="kw">while</span> turn &lt; <span class="dig">6</span>:
+        turn_waiter(civv,OBS)
+
+<span class="kw">def</span> restart_processor():
+    OBS = App(<span class="str">"OBS"</span>)
+    civv = App(<span class="str">"CivilizationV"</span>)
+    turn = turn_getter()
+    <span class="kw">while</span> True:
+        turn_waiter(civv,OBS)
+
+<span class="cmt">#test_processor(False)</span>
+CBRX_processor(True)
+<span class="cmt">#CBRX_loader(False)</span>
+<span class="cmt">#game_starter()</span>
+<span class="cmt">#map_screen_shotter()</span>
+<span class="cmt">#file_processor()</span>
+<span class="cmt">#turn_getter()</span>
+
+</pre>
+</body>
+</html>
